@@ -1,0 +1,44 @@
+{
+  "name": "compilation-principle",
+  "version": "1.0.0",
+  "author": "shewulong",
+  "license": "MIT",
+  "description": "编译原理前端实现",
+  "main": "dist/index.js",
+  "module": "src/index.ts",
+  "types": "dist/index.d.ts",
+  "type": "commonjs",
+  "bin": {},
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "pub": "tsc && pnpm publish"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "keywords": [
+    "compilation",
+    "compiler",
+    "build",
+    "parser",
+    "ast",
+    "token",
+    "lexer",
+    "transformer"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.3.1",
+    "typescript": "^5.1.6",
+    "vitest": "^0.32.2"
+  },
+  "repository": "https://github.com/wulongshe/compilation-principle.git",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "engines": {
+    "node": ">=14.20.0"
+  }
+}
