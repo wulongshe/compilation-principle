@@ -1,20 +1,23 @@
 import { Grammar } from "./type"
+import { createIncludes } from "./utils"
 
 export function createFirst<N extends string, T extends string>(G: Grammar<N, T>) {
+  const { inN } = createIncludes(G)
   const FirstMap = {} as Record<N, T[][]>
   function First(N: N): T[][]
   function First(N: (N | T)[]): T[]
   function First(N: N | (N | T)[]): T[][] | T[] {
-    if (Array.isArray(N)) return G.N.includes(N[0] as any) ? First(N[0] as N).flat() : [N[0] as T]
+    if (Array.isArray(N)) return inN(N[0] as any) ? First(N[0] as N).flat() : [N[0] as T]
 
     if (FirstMap[N]) return FirstMap[N]
-    const first = G.P[N].map(([it]) => (G.N.includes(it as any) ? First(it as N).flat() : [it as T]))
+    const first = G.P[N].map(([it]) => (inN(it as any) ? First(it as N).flat() : [it as T]))
     return (FirstMap[N] ??= [...new Set(first)])
   }
   return First
 }
 
 export function createFollow<N extends string, T extends string>(G: Grammar<N, T>) {
+  const { inN } = createIncludes(G)
   const FollowMap = {} as Record<N, T[]>
   const First = createFirst(G)
 
@@ -27,7 +30,7 @@ export function createFollow<N extends string, T extends string>(G: Grammar<N, T
     }
 
     // N 后面一个符号的 First 集合
-    const first = G.N.includes(item[index + 1] as any) ? First(item[index + 1] as N).flat() : [item[index + 1] as T]
+    const first = inN(item[index + 1] as any) ? First(item[index + 1] as N).flat() : [item[index + 1] as T]
 
     if (!first.includes('ε' as T) || N === key) return first.filter((item) => item !== 'ε')
     // N 后面的符号可以推出 ε
@@ -82,6 +85,7 @@ export function createTable<N extends string, T extends string>(G: Grammar<N, T>
 }
 
 export function createAstByLL1<N extends string, T extends string>(G: Grammar<N, T>, code: string) {
+  const { inN } = createIncludes(G)
   const table = createTable(G)
   const stack = ['#', G.S] as (N | T)[]
   const input = [...code, '#'] as T[]
@@ -107,7 +111,7 @@ export function createAstByLL1<N extends string, T extends string>(G: Grammar<N,
       if (item[0] === 'ε') continue
       stack.push(...[...item].reverse())
 
-      node.value = item.map((it) => (G.N.includes(it as N) ? { type: it, value: ['ε'] } : it))
+      node.value = item.map((it) => (inN(it as N) ? { type: it, value: ['ε'] } : it))
       astStack.push(...[...node.value].reverse())
     }
   }
