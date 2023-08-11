@@ -1,18 +1,4 @@
-export interface NFA<N extends string, T extends string> {
-  N: N[]
-  T: T[]
-  P: Record<N, (N | T)[][]>
-  S: N
-  F: N[]
-}
-
-export interface DFA<N extends string, T extends string> extends NFA<N, T> {
-  D: {
-    [key in N]: N[]
-  }
-}
-
-export type StateMachine<N extends string = string, T extends string = string> = Record<N, Record<T, N[]>>
+import { NFA, DFA, StateMachine } from './type'
 
 export function generateStateMachine<N extends string, T extends string>(NFA: NFA<N, T>): StateMachine<N, T> {
   // TODO:

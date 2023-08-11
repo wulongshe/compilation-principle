@@ -1,14 +1,4 @@
-export interface Grammar<N extends string, T extends string> {
-  N: N[]
-  T: T[]
-  P: Record<N, (N | T)[][]>
-  S: N
-}
-
-export interface AST<N extends string, T extends string> {
-  type: N
-  value: (AST<N, T> | T)[]
-}
+import { Grammar } from "./type"
 
 export function createFirst<N extends string, T extends string>(G: Grammar<N, T>) {
   const FirstMap = {} as Record<N, T[][]>
